@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finca PataPalo — Productos Orgánicos · La Fortuna, Costa Rica</title>
+  <meta name="description" content="Frutas exóticas, especias, harinas y suplementos cultivados en nuestra propia finca orgánica certificada en La Fortuna de San Carlos, Costa Rica." />
+  <meta name="keywords" content="finca orgánica Costa Rica, productos orgánicos La Fortuna, pitaya, acaí, jackfruit, cúrcuma, wellness Costa Rica" />
+  <meta property="og:title" content="Finca PataPalo — Orgánico desde La Fortuna, CR" />
+  <meta property="og:description" content="De la finca a tu mesa. Frutas exóticas, especias y superalimentos certificados orgánicos." />
+  <meta property="og:image" content="images/hero.png" />
+  <link rel="icon" href="images/logo-stake.jpg" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════ -->
+<nav class="nav" id="nav">
+  <a href="#" class="nav-logo-link">
+    <img src="images/logo.jpg" alt="Finca PataPalo" class="nav-logo-img" />
+  </a>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" data-lang="es">ES</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <button class="cart-btn" id="cart-btn" aria-label="Carrito">
+      🛒
+      <span class="cart-badge" id="cart-badge">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <img src="images/logo.jpg" alt="Finca PataPalo Logo" class="hero-main-logo" />
+    
+    <div class="hero-eyebrow"
+      data-es="La Fortuna · Volcán Arenal · Costa Rica"
+      data-en="La Fortuna · Arenal Volcano · Costa Rica">
+      La Fortuna · Volcán Arenal · Costa Rica
+    </div>
+
+    <h1 class="hero-title">
+      <span data-es="De la finca" data-en="Straight from">De la finca</span><br>
+      <em data-es="a tu mesa." data-en="our farm.">a tu mesa.</em>
+    </h1>
+
+    <p class="hero-sub"
+        data-es="También puedes enviarnos un mensaje de WhatsApp para pedidos especiales o preguntas. ¡Estamos para servirte!"
+        data-en="You can also send a WhatsApp message for special requests or questions. We are here to help!">
+      También puedes enviarnos un mensaje de WhatsApp para pedidos especiales o preguntas. ¡Estamos para servirte!
+    </p>
+
+    <div class="hero-cta">
+      <button class="btn btn-primary" id="hero-shop-btn"
+        data-es="Ver Productos" data-en="Shop Now">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg> 
+        <span class="btn-text" data-es="Ver Productos" data-en="Shop Now">Ver Productos</span>
+      </button>
+      <a href="#" onclick="orderViaWhatsApp(event)"
+        class="btn btn-ghost"
+        data-es="WhatsApp" data-en="WhatsApp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg> 
+        <span class="btn-text">WhatsApp</span>
+      </a>
+    </div>
+
+    <div class="hero-trust">
+      <div class="trust-badge">
+        <span>🌱</span>
+        <span data-es="Cert. Orgánico" data-en="Org. Certified">Cert. Orgánico</span>
+      </div>
+      <div class="trust-badge">
+        <span>🏴</span>
+        <span data-es="Bandera Azul" data-en="Blue Flag">Bandera Azul</span>
+      </div>
+      <div class="trust-badge">
+        <span>⭐</span>
+        <span>PYMPA</span>
+      </div>
+      <div class="trust-badge">
+        <span>🏔️</span>
+        <span data-es="100% Propio" data-en="100% Own Farm">100% Propio</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FEATURED STRIP — "Fresh This Week"
+═══════════════════════════════════════ -->
+<section class="featured reveal" id="featured">
+  <div class="featured-header">
+    <h2 class="featured-title">
+      <span data-es="Lo mejor" data-en="Best of">Lo mejor</span>
+      <span data-es=" de temporada" data-en=" the season"> de temporada</span>
+    </h2>
+    <span class="featured-subtitle"
+      data-es="Selección de la semana"
+      data-en="This week's picks">
+      Selección de la semana
+    </span>
+  </div>
+  <div class="featured-scroll" id="featured-scroll">
+    <!-- Populated by app.js -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SHOP — Full Catalog
+═══════════════════════════════════════ -->
+<section class="shop" id="shop">
+  <div class="shop-header reveal">
+    <div class="shop-title"
+      data-es="Catálogo Completo"
+      data-en="Full Catalog">
+      Catálogo Completo
+    </div>
+    <div class="shop-sub"
+      data-es="34 productos · Cultivo propio · Sin intermediarios"
+      data-en="34 products · Own cultivation · No middlemen">
+      34 productos · Cultivo propio · Sin intermediarios
+    </div>
+  </div>
+
+  <!-- Sticky category tabs -->
+  <div class="category-tabs-wrap">
+    <div class="category-tabs" id="category-tabs">
+      <!-- Populated by app.js -->
+    </div>
+  </div>
+
+  <!-- Product grid -->
+  <div class="products-grid" id="products-grid">
+    <!-- Populated by app.js -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer class="footer" id="footer">
+  <div class="footer-inner">
+    <img src="images/logo.jpg" alt="Finca PataPalo" class="footer-logo" />
+    <div class="footer-info">
+      <strong style="color:rgba(255,255,255,0.85);font-family:var(--font-head)">Finca PataPalo · Wooden Leg Farm</strong><br>
+      <span data-es="📍 La Fortuna de San Carlos, Costa Rica" data-en="📍 La Fortuna de San Carlos, Costa Rica">
+        📍 La Fortuna de San Carlos, Costa Rica
+      </span><br>
+      <span data-es="🛒 Feria Orgánica de San José — cada sábado" data-en="🛒 San José Organic Market — every Saturday">
+        🛒 Feria Orgánica de San José — cada sábado
+      </span><br>
+      <a href="#" onclick="orderViaWhatsApp(event)">
+        📱 +506 8888-7777
+      </a>
+      &nbsp;·&nbsp;
+      <a href="admin.html"
+        data-es="Panel Admin" data-en="Admin Panel">Panel Admin</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.5rem;align-items:flex-start">
+      <div style="font-size:0.78rem;color:rgba(255,255,255,0.5)" data-es="Certificaciones" data-en="Certifications">Certificaciones</div>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.7)">🌱 Certificado Orgánico</div>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.7)">🏴 Bandera Azul Agropecuaria</div>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.7)">⭐ PYMPA</div>
+    </div>
+  </div>
+  <div class="footer-copy container">
+    <span data-es="© 2025 Finca PataPalo. Todos los derechos reservados."
+          data-en="© 2025 Finca PataPalo. All rights reserved.">
+      © 2025 Finca PataPalo. Todos los derechos reservados.
+    </span>
+    &nbsp;·&nbsp;
+    <span data-es="Hecho con 💚 en Costa Rica" data-en="Made with 💚 in Costa Rica">
+      Hecho con 💚 en Costa Rica
+    </span>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════
+     CART DRAWER
+═══════════════════════════════════════ -->
+<div class="cart-overlay" id="cart-overlay">
+  <div class="cart-drawer">
+    <div class="cart-header">
+      <h3 data-es="Tu Pedido" data-en="Your Order">Tu Pedido</h3>
+      <button class="cart-close-btn" id="cart-close-btn">✕</button>
+    </div>
+    <div class="cart-items" id="cart-items">
+      <div class="cart-empty">
+        <div class="empty-icon">🛒</div>
+        <p data-es="Tu carrito está vacío" data-en="Your cart is empty">Tu carrito está vacío</p>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total">
+        <span class="cart-total-label"
+          data-es="Subtotal productos"
+          data-en="Product subtotal">Subtotal productos</span>
+        <span class="cart-total-value" id="cart-total-value">₡0</span>
+      </div>
+      <p class="cart-note"
+        data-es="Precio de entrega se cotiza por WhatsApp."
+        data-en="Delivery price quoted separately via WhatsApp.">
+        Precio de entrega se cotiza por WhatsApp.
+      </p>
+      <button class="btn btn-wa" id="whatsapp-order-btn"
+        data-es="Ordenar por WhatsApp"
+        data-en="Order via WhatsApp">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg> 
+        <span class="btn-text" data-es="Ordenar por WhatsApp" data-en="Order via WhatsApp">Ordenar por WhatsApp</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FLOATING WHATSAPP
+═══════════════════════════════════════ -->
+<div class="wa-float" onclick="orderViaWhatsApp(event)" style="cursor: pointer;">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+  <span class="wa-float-text" data-es="Hacer pedido" data-en="Place order">Hacer pedido</span>
+</div>
+
+<script src="js/products.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

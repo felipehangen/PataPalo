@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Finca PataPalo</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>" />
+  <style>
+    body { background: var(--color-cream); }
+    #admin-app { display: none; }
+    #admin-login-screen { display: flex; }
+  </style>
+</head>
+<body class="admin-page">
+
+<!-- ═══ LOGIN SCREEN ═══════════════════════════════════ -->
+<div class="admin-login" id="admin-login-screen">
+  <div class="login-card">
+    <div class="logo">🔐</div>
+    <h2>Panel de Administración</h2>
+    <p>Finca PataPalo — Gestión de Precios</p>
+    <div class="form-group">
+      <label for="admin-password">Contraseña</label>
+      <input type="password" id="admin-password" placeholder="Ingresar contraseña"
+             onkeydown="if(event.key==='Enter') tryLogin()" />
+      <div class="login-error" id="login-error">Contraseña incorrecta. Inténtalo de nuevo.</div>
+    </div>
+    <button class="btn btn-primary" onclick="tryLogin()" style="width:100%; justify-content:center">
+      Ingresar
+    </button>
+    <p style="margin-top:1.5rem; font-size:0.8rem; color:var(--color-muted)">
+      <a href="index.html" style="color:var(--color-sage)">← Volver al sitio</a>
+    </p>
+  </div>
+</div>
+
+<!-- ═══ ADMIN APP ════════════════════════════════════════ -->
+<div id="admin-app">
+
+  <!-- Nav -->
+  <nav class="admin-nav">
+    <div class="nav-logo">
+      <div class="logo-icon">🌿</div>
+      <span>Finca PataPalo — Admin</span>
+    </div>
+    <div style="display:flex; gap:0.75rem; align-items:center">
+      <a href="index.html" class="admin-logout" style="text-decoration:none">← Ver Sitio</a>
+      <button class="admin-logout" onclick="logout()">Cerrar Sesión</button>
+    </div>
+  </nav>
+
+  <!-- Content -->
+  <div class="admin-content">
+    <div class="admin-header">
+      <h1>Gestión de Precios</h1>
+      <p>Modifica el precio de cada producto individualmente. Los cambios se guardan en este navegador.</p>
+    </div>
+
+    <div class="admin-note">
+      ⚠️ <strong>Nota:</strong> Los precios se guardan en el caché local de este navegador (<code>localStorage</code>). Si borras el caché del navegador, los precios volverán a sus valores por defecto. Para un respaldo permanente, apunta los precios en un documento aparte.
+    </div>
+
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Categoría</th>
+            <th>Precio Actual (₡)</th>
+            <th>Precio por Defecto (₡)</th>
+          </tr>
+        </thead>
+        <tbody id="admin-table-body"></tbody>
+      </table>
+      <div class="admin-save-bar">
+        <div>
+          <span class="save-feedback" id="save-feedback">✅ Precios guardados correctamente</span>
+        </div>
+        <div style="display:flex; gap:0.75rem">
+          <button class="btn btn-outline" onclick="resetPrices()">
+            ↺ Restablecer Defecto
+          </button>
+          <button class="btn btn-primary" onclick="savePrices()">
+            💾 Guardar Precios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="js/products.js"></script>
+<script>
+  // ── Auth ──────────────────────────────────────────────
+  const ADMIN_PASSWORD = "patapalo2025"; // ← Cambiar esta línea para modificar la contraseña
+  const SESSION_KEY    = "fp-admin-session";
+
+  function tryLogin() {
+    const input = document.getElementById('admin-password').value;
+    const errEl = document.getElementById('login-error');
+    if (input === ADMIN_PASSWORD) {
+      sessionStorage.setItem(SESSION_KEY, "1");
+      showApp();
+    } else {
+      errEl.style.display = 'block';
+      document.getElementById('admin-password').value = '';
+      document.getElementById('admin-password').focus();
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+  }
+
+  function showApp() {
+    document.getElementById('admin-login-screen').style.display = 'none';
+    document.getElementById('admin-app').style.display = 'block';
+    renderAdminTable();
+  }
+
+  // Check session on load
+  if (sessionStorage.getItem(SESSION_KEY) === "1") {
+    window.addEventListener('DOMContentLoaded', showApp);
+  }
+
+  // ── Render Table ──────────────────────────────────────
+  function getCurrentPrice(id) {
+    const s = localStorage.getItem(`fp-price-${id}`);
+    const p = PRODUCTS.find(pr => pr.id === id);
+    return s !== null ? parseInt(s, 10) : (p ? p.price : 0);
+  }
+
+  const CAT_LABELS = {
+    fresh: 'Cultivo Fresco', packed: 'Empacados', chips: 'Chips',
+    spices: 'Especias en Polvo', flours: 'Harinas',
+    supplements: 'Suplementos', tea: 'Té'
+  };
+
+  function renderAdminTable() {
+    const tbody = document.getElementById('admin-table-body');
+    tbody.innerHTML = PRODUCTS.map(p => {
+      const current  = getCurrentPrice(p.id);
+      const def      = p.price;
+      const changed  = current !== def;
+      return `
+        <tr>
+          <td>${p.es}</td>
+          <td>${CAT_LABELS[p.category] || p.category}</td>
+          <td>
+            <input type="number" class="price-input" id="price-${p.id}"
+                   value="${current}" min="0" step="100"
+                   style="${changed ? 'border-color:var(--color-sage); color:var(--color-forest)' : ''}" />
+          </td>
+          <td style="color:var(--color-muted)">₡${def.toLocaleString('es-CR')}</td>
+        </tr>`;
+    }).join('');
+  }
+
+  // ── Save ──────────────────────────────────────────────
+  function savePrices() {
+    PRODUCTS.forEach(p => {
+      const input = document.getElementById(`price-${p.id}`);
+      if (input) {
+        const val = parseInt(input.value, 10);
+        if (!isNaN(val) && val >= 0) {
+          localStorage.setItem(`fp-price-${p.id}`, val);
+        }
+      }
+    });
+    renderAdminTable();
+    const fb = document.getElementById('save-feedback');
+    fb.classList.add('show');
+    setTimeout(() => fb.classList.remove('show'), 3000);
+  }
+
+  // ── Reset ─────────────────────────────────────────────
+  function resetPrices() {
+    if (!confirm('¿Estás seguro de que deseas restablecer TODOS los precios a sus valores por defecto?')) return;
+    PRODUCTS.forEach(p => localStorage.removeItem(`fp-price-${p.id}`));
+    renderAdminTable();
+    const fb = document.getElementById('save-feedback');
+    fb.textContent = '↺ Precios restablecidos a valores por defecto';
+    fb.classList.add('show');
+    setTimeout(() => { fb.classList.remove('show'); fb.textContent = '✅ Precios guardados correctamente'; }, 3000);
+  }
+</script>
+</body>
+</html>

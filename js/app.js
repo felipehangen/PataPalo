@@ -158,7 +158,7 @@ function flashAddBtn(key) {
     btn.textContent = '✓';
     setTimeout(() => {
       btn.classList.remove('in-cart');
-      btn.textContent = '+';
+      btn.textContent = currentLang === 'es' ? 'Agregar' : 'Add';
     }, 1400);
   });
 }

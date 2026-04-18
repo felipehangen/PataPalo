@@ -316,7 +316,7 @@ function orderViaWhatsApp(e) {
 
 // ── Featured Strip ────────────────────────────────────────
 function renderFeatured() {
-  const container = document.getElementById('featured-scroller');
+  const container = document.getElementById('featured-scroll');
   if (!container) return;
 
   const featured = PRODUCTS.filter(p => p.featured && p.available);

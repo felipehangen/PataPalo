@@ -205,6 +205,10 @@ function addToCart(id, variantIdx = null) {
     });
   }
 
+  if (window.trackAddToCart) {
+    window.trackAddToCart(id, variantLabel || '1 Kilo / Por Defecto');
+  }
+
   renderCart();
   updateCartBadge();
   flashAddBtn(key);

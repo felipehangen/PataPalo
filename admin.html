@@ -11,6 +11,16 @@
     body { background: var(--color-cream); }
     #admin-app { display: none; }
     #admin-login-screen { display: flex; }
+    .admin-tabs { display: flex; gap: 1rem; border-bottom: 2px solid var(--color-border); margin-bottom: 2rem; padding-bottom: 0.5rem; }
+    .admin-tab-btn { background: none; border: none; padding: 0.5rem 1rem; cursor: pointer; font-size: 1rem; font-weight: bold; color: var(--color-muted); border-bottom: 2px solid transparent; margin-bottom: -0.7rem; }
+    .admin-tab-btn.active { color: var(--color-forest); border-bottom: 2px solid var(--color-forest); }
+    .admin-tab-btn:hover:not(.active) { color: var(--color-dark); }
+    .admin-tab-content { display: none; }
+    .admin-tab-content.active { display: block; }
+    .metric-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .metric-card { background: white; padding: 1.5rem; border-radius: var(--radius); border: 1px solid var(--color-border); text-align: center; }
+    .metric-val { font-size: 2.5rem; font-weight: 800; color: var(--color-forest); }
+    .metric-label { font-size: 0.85rem; color: var(--color-muted); margin-top: 0.5rem; font-weight: 600; text-transform: uppercase; }
   </style>
 </head>
 <body class="admin-page">
@@ -57,8 +67,15 @@
 
   <!-- Content -->
   <div class="admin-content">
-    <div class="admin-header">
-      <h1>Gestión de Precios</h1>
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" id="btn-tab-prices" onclick="switchAdminTab('prices')">💰 Precios y Catálogo</button>
+      <button class="admin-tab-btn" id="btn-tab-analytics" onclick="switchAdminTab('analytics')">📊 Analítica de Visitas</button>
+    </div>
+
+    <!-- PRECIOS TAB -->
+    <div id="tab-prices" class="admin-tab-content active">
+      <div class="admin-header">
+        <h1>Gestión de Precios</h1>
       <p>Modifica el precio de cada producto individualmente. Los cambios se guardan en este navegador.</p>
     </div>
 
@@ -91,8 +108,51 @@
           </button>
         </div>
       </div>
-    </div>
-  </div>
+      </div>
+    </div> <!-- /tab-prices -->
+
+    <!-- ANALYTICS TAB -->
+    <div id="tab-analytics" class="admin-tab-content">
+      <div class="admin-header">
+        <h1>Métricas y Uso en Vivo</h1>
+        <p>Monitoreo de visitas a la página y productos preferidos (Tiempos de sesión contados al salir).</p>
+      </div>
+
+      <div class="metric-cards">
+        <div class="metric-card">
+          <div class="metric-val" id="metric-visits">-</div>
+          <div class="metric-label">Sesiones Totales</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val" id="metric-avgtime">-</div>
+          <div class="metric-label">Duración Promedio</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val" id="metric-carts">-</div>
+          <div class="metric-label">Clics de 'Agregar'</div>
+        </div>
+      </div>
+
+      <div class="admin-header" style="margin-top: 2.5rem">
+        <h2>Top Productos Demandados</h2>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Presentación / Variedad</th>
+              <th>Total Veces en Bolsa</th>
+            </tr>
+          </thead>
+          <tbody id="admin-analytics-body">
+             <tr><td colspan="3" style="text-align:center; padding: 2rem;">Cargando historial de la nube...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div> <!-- /tab-analytics -->
+
+  </div><!-- /admin-content -->
 
 </div>
 
@@ -342,6 +402,82 @@
     PRODUCTS.forEach(p => localStorage.removeItem(`fp-config-${p.id}`));
     // Supabase erase logic needs explicit deletion keys, skipping implicit mass-delete here for safety.
     alert('Funcionalidad de limpieza en masa local completada. Para limpiar la Nube, por favor borra los datos desde la interfaz web de Supabase.');
+  }
+
+  // ── Analíticas y Tabs ─────────────────────────────────
+  function switchAdminTab(tab) {
+    document.getElementById('tab-prices').classList.remove('active');
+    document.getElementById('tab-analytics').classList.remove('active');
+    document.getElementById('btn-tab-prices').classList.remove('active');
+    document.getElementById('btn-tab-analytics').classList.remove('active');
+
+    document.getElementById(`tab-${tab}`).classList.add('active');
+    document.getElementById(`btn-tab-${tab}`).classList.add('active');
+
+    if (tab === 'analytics') {
+       loadAnalytics();
+    }
+  }
+
+  async function loadAnalytics() {
+    if (!window.db) {
+       document.getElementById('admin-analytics-body').innerHTML = '<tr><td colspan="3" align="center">Desconectado. Verifica las credenciales de Supabase.</td></tr>';
+       return;
+    }
+    document.getElementById('admin-analytics-body').innerHTML = '<tr><td colspan="3" align="center">Sincronizando con la base de datos...</td></tr>';
+    
+    try {
+      // Visitas
+      const { data: visits } = await window.db.from('fincapatapalo_visits').select('*');
+      if (visits) {
+         document.getElementById('metric-visits').innerText = visits.length;
+         
+         const validDurations = visits.map(v => v.duration_seconds || 0).filter(d => d > 0);
+         const avg = validDurations.length ? (validDurations.reduce((a,b) => a+b, 0) / validDurations.length) : 0;
+         
+         let avgText = '';
+         if (avg > 60) {
+           avgText = Math.floor(avg / 60) + 'm ' + Math.floor(avg % 60) + 's';
+         } else {
+           avgText = Math.floor(avg) + 's';
+         }
+         document.getElementById('metric-avgtime').innerText = avgText;
+      }
+
+      // Eventos del carrito
+      const { data: carts } = await window.db.from('fincapatapalo_cart_events').select('*');
+      if (carts) {
+         document.getElementById('metric-carts').innerText = carts.length;
+         
+         // Agrupar
+         const itemCounts = {};
+         carts.forEach(c => {
+            const p = PRODUCTS.find(x => x.id === c.product_id);
+            const name = p ? p.es : c.product_id;
+            const pres = c.presentation || 'Por Defecto';
+            const key = `${name} | ${pres}`;
+            itemCounts[key] = (itemCounts[key] || 0) + 1;
+         });
+
+         const sorted = Object.entries(itemCounts).sort((a,b) => b[1] - a[1]);
+         let html = '';
+         if (sorted.length === 0) {
+            html = '<tr><td colspan="3" align="center" style="padding:2rem">Ningún producto agregado aún.</td></tr>';
+         } else {
+            sorted.forEach(([k, count]) => {
+               const parts = k.split(' | ');
+               html += `<tr>
+                  <td>${parts[0]}</td>
+                  <td><span class="badge" style="background:#f1f5f9;color:var(--color-dark);padding:0.2rem 0.5rem;border-radius:4px;font-size:0.8rem">${parts[1]}</span></td>
+                  <td><strong>${count}</strong></td>
+               </tr>`;
+            });
+         }
+         document.getElementById('admin-analytics-body').innerHTML = html;
+      }
+    } catch(e) {
+      document.getElementById('admin-analytics-body').innerHTML = '<tr><td colspan="3" align="center" style="color:red">Asegúrate de haber creado las tablas de visitas y eventos en Supabase.</td></tr>';
+    }
   }
 </script>
 </body>

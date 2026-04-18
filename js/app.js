@@ -303,8 +303,8 @@ function orderViaWhatsApp(e) {
     });
     const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
     text = currentLang === 'es'
-      ? `Hola! Quiero hacer el siguiente pedido:\n\n${lines.join('\n')}\n\nSubtotal: ${formatPrice(subtotal)}`
-      : `Hello! I'd like to place the following order:\n\n${lines.join('\n')}\n\nSubtotal: ${formatPrice(subtotal)}`;
+      ? `Hola! Quiero hacer el siguiente pedido:\n\n${lines.join('\n')}\n\nSubtotal: ${formatPrice(subtotal)}\n\n📌 Para entregas este sábado en La Feria Verde (Barrio Aranjuez, San José).\n*Deseo pagar mediante:*\n[ ] SINPE Móvil\n[ ] Efectivo en la feria`
+      : `Hello! I'd like to place the following order:\n\n${lines.join('\n')}\n\nSubtotal: ${formatPrice(subtotal)}\n\n📌 For delivery this Saturday at La Feria Verde (Barrio Aranjuez, San José).\n*My payment method will be:*\n[ ] SINPE\n[ ] Cash at the market`;
   } else {
     text = currentLang === 'es'
       ? `Hola! Quiero hacer un pedido.`

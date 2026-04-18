@@ -1,7 +1,7 @@
 // js/supabase-config.js
 // IMPORTANTE: REEMPLAZA ESTOS VALORES CON LOS DE TU PROYECTO SUPABASE
-const SUPABASE_URL = "REEMPLAZA_CON_TU_SUPABASE_URL";
-const SUPABASE_ANON_KEY = "REEMPLAZA_CON_TU_ANON_KEY";
+const SUPABASE_URL = "https://clxntjpofnivxaxmlxui.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_pIgUE7c7BU65lt1I5R0g7A_O5xfxDB6";
 
 // Inicializa el cliente solo si las credenciales fueron proporcionadas
 let supabaseClient = null;

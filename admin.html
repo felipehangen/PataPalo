@@ -71,8 +71,7 @@
         <thead>
           <tr>
             <th>Producto / Categoría</th>
-            <th>Precio (₡)</th>
-            <th>Tipo de Venta</th>
+            <th>Precios y Tamaños (₡)</th>
             <th>Disponibilidad</th>
             <th>Temporada</th>
           </tr>
@@ -193,11 +192,23 @@
     let finalUnits = defUnitType;
     if (cloud && cloud.unit_type === '70g-1kg') finalUnits = '70g,kilo';
     
+    // Determine dynamic base prices using previous logic
+    let legacyUnit = cloud ? (cloud.unit_type === '70g-1kg' ? '70g,kilo' : cloud.unit_type) : finalUnits;
+    if (!legacyUnit) legacyUnit = finalUnits;
+
+    let pre_70g_multi = 1, pre_500g_multi = (legacyUnit.includes('70g') || legacyUnit.includes('70g-1kg')) ? 5 : 1;
+    let pre_kilo_multi = (legacyUnit.includes('70g') || legacyUnit.includes('70g-1kg')) ? 10 : (legacyUnit.includes('500g') ? 2 : 1);
+
+    let price_base = cloud ? cloud.price : p.price;
+
     return {
-       price: cloud ? cloud.price : p.price,
        available: cloud ? cloud.available : true,
        featured: cloud ? cloud.featured : !!p.featured,
-       unitType: cloud ? (cloud.unit_type === '70g-1kg' ? '70g,kilo' : cloud.unit_type) : finalUnits
+       unitType: legacyUnit,
+       p_unit: (cloud && cloud.price_unit) ? cloud.price_unit : price_base,
+       p_70g: (cloud && cloud.price_70g) ? cloud.price_70g : price_base * pre_70g_multi,
+       p_500g: (cloud && cloud.price_500g) ? cloud.price_500g : price_base * pre_500g_multi,
+       p_kilo: (cloud && cloud.price_kilo) ? cloud.price_kilo : price_base * pre_kilo_multi
     };
   }
 
@@ -218,16 +229,38 @@
             <small style="color:var(--c-muted)">${CAT_LABELS[p.category] || p.category} / Ref: ₡${p.price.toLocaleString('es-CR')}</small>
           </td>
           <td>
-            <input type="number" class="price-input" id="price-${p.id}"
-                   value="${conf.price}" min="0" step="50"
-                   style="width:80px; padding:0.25rem; border:1px solid var(--c-border); border-radius:4px;" />
-          </td>
-          <td>
-            <div style="display:flex; flex-direction:column; gap:6px; font-size:0.85rem;">
-              <label style="display:flex; align-items:center; gap:4px; font-weight:normal; color:inherit; font-family:inherit; margin:0;"><input type="checkbox" id="u-unit-${p.id}" ${conf.unitType.includes('unit')?'checked':''}> Por Unidad</label>
-              <label style="display:flex; align-items:center; gap:4px; font-weight:normal; color:inherit; font-family:inherit; margin:0;"><input type="checkbox" id="u-70g-${p.id}" ${conf.unitType.includes('70g')?'checked':''}> Bolsa 70g</label>
-              <label style="display:flex; align-items:center; gap:4px; font-weight:normal; color:inherit; font-family:inherit; margin:0;"><input type="checkbox" id="u-500g-${p.id}" ${conf.unitType.includes('500g')?'checked':''}> Medio Kilo</label>
-              <label style="display:flex; align-items:center; gap:4px; font-weight:normal; color:inherit; font-family:inherit; margin:0;"><input type="checkbox" id="u-kilo-${p.id}" ${conf.unitType.includes('kilo')?'checked':''}> 1 Kilo</label>
+            <div style="display:flex; flex-direction:column; gap:8px; font-size:0.85rem;">
+              <label style="display:flex; align-items:center; gap:8px; font-weight:normal; color:inherit; font-family:inherit; margin:0;">
+                 <input type="checkbox" id="u-unit-${p.id}" ${conf.unitType.includes('unit')?'checked':''} 
+                        onchange="document.getElementById('p-unit-${p.id}').disabled = !this.checked" style="margin-right:4px;">
+                 <span style="width:75px">Por Unidad</span>
+                 <input type="number" id="p-unit-${p.id}" value="${conf.p_unit}" step="50" min="0" ${!conf.unitType.includes('unit')?'disabled':''}
+                        style="width:90px; padding:0.25rem; border:1px solid var(--c-border); border-radius:4px; font-size:0.85rem;">
+              </label>
+
+              <label style="display:flex; align-items:center; gap:8px; font-weight:normal; color:inherit; font-family:inherit; margin:0;">
+                 <input type="checkbox" id="u-70g-${p.id}" ${conf.unitType.includes('70g')?'checked':''} 
+                        onchange="document.getElementById('p-70g-${p.id}').disabled = !this.checked" style="margin-right:4px;">
+                 <span style="width:75px">Bolsa 70g</span>
+                 <input type="number" id="p-70g-${p.id}" value="${conf.p_70g}" step="50" min="0" ${!conf.unitType.includes('70g')?'disabled':''}
+                        style="width:90px; padding:0.25rem; border:1px solid var(--c-border); border-radius:4px; font-size:0.85rem;">
+              </label>
+
+              <label style="display:flex; align-items:center; gap:8px; font-weight:normal; color:inherit; font-family:inherit; margin:0;">
+                 <input type="checkbox" id="u-500g-${p.id}" ${conf.unitType.includes('500g')?'checked':''} 
+                        onchange="document.getElementById('p-500g-${p.id}').disabled = !this.checked" style="margin-right:4px;">
+                 <span style="width:75px">Medio Kilo</span>
+                 <input type="number" id="p-500g-${p.id}" value="${conf.p_500g}" step="50" min="0" ${!conf.unitType.includes('500g')?'disabled':''}
+                        style="width:90px; padding:0.25rem; border:1px solid var(--c-border); border-radius:4px; font-size:0.85rem;">
+              </label>
+
+              <label style="display:flex; align-items:center; gap:8px; font-weight:normal; color:inherit; font-family:inherit; margin:0;">
+                 <input type="checkbox" id="u-kilo-${p.id}" ${conf.unitType.includes('kilo')?'checked':''} 
+                        onchange="document.getElementById('p-kilo-${p.id}').disabled = !this.checked" style="margin-right:4px;">
+                 <span style="width:75px">1 Kilo</span>
+                 <input type="number" id="p-kilo-${p.id}" value="${conf.p_kilo}" step="50" min="0" ${!conf.unitType.includes('kilo')?'disabled':''}
+                        style="width:90px; padding:0.25rem; border:1px solid var(--c-border); border-radius:4px; font-size:0.85rem;">
+              </label>
             </div>
           </td>
           <td>
@@ -251,18 +284,35 @@
 
     const payload = [];
     PRODUCTS.forEach(p => {
-      const prInput = document.getElementById(`price-${p.id}`);
-      if (prInput) {
-        const val = parseInt(prInput.value, 10);
+      // Read legacy fields to not break constraints on price columns for users that don't transition quickly.
+      // We still store a base price as a backup for existing algorithms
+      const activeUnits = document.getElementById(`u-unit-${p.id}`);
+      if (activeUnits) {
         let u = [];
+        let p_u = parseInt(document.getElementById(`p-unit-${p.id}`).value, 10);
+        let p_70 = parseInt(document.getElementById(`p-70g-${p.id}`).value, 10);
+        let p_500 = parseInt(document.getElementById(`p-500g-${p.id}`).value, 10);
+        let p_1k = parseInt(document.getElementById(`p-kilo-${p.id}`).value, 10);
+
         if (document.getElementById(`u-unit-${p.id}`).checked) u.push('unit');
         if (document.getElementById(`u-70g-${p.id}`).checked) u.push('70g');
         if (document.getElementById(`u-500g-${p.id}`).checked) u.push('500g');
         if (document.getElementById(`u-kilo-${p.id}`).checked) u.push('kilo');
+
+        // Minimum price assignment logic for backward compatibility
+        let pb = p_u;
+        if (u.includes('70g') && !isNaN(p_70)) pb = p_70;
+        else if (u.includes('500g') && !isNaN(p_500)) pb = p_500;
+        else if (u.includes('kilo') && !isNaN(p_1k)) pb = p_1k;
+        if (isNaN(pb)) pb = p.price;
         
         payload.push({
            id: p.id,
-           price: isNaN(val) ? p.price : val,
+           price: pb, // legacy base price
+           price_unit: isNaN(p_u) ? null : p_u,
+           price_70g: isNaN(p_70) ? null : p_70,
+           price_500g: isNaN(p_500) ? null : p_500,
+           price_kilo: isNaN(p_1k) ? null : p_1k,
            available: document.getElementById(`avail-${p.id}`).value === "1",
            featured: document.getElementById(`feat-${p.id}`).checked,
            unit_type: u.join(',') || 'unit'

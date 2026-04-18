@@ -61,15 +61,19 @@ async function applyAdminConfigs() {
          let variants = [];
          units.forEach(u => {
             if (u === 'unit') {
-               variants.push({ label: "Por Unidad", labelEs: "Por Unidad", labelEn: "Per Unit", price: p.price });
+               let val = (cfg.price_unit !== undefined && cfg.price_unit !== null) ? cfg.price_unit : p.price;
+               variants.push({ label: "Por Unidad", labelEs: "Por Unidad", labelEn: "Per Unit", price: val });
             } else if (u === '70g') {
-               variants.push({ label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price });
+               let val = (cfg.price_70g !== undefined && cfg.price_70g !== null) ? cfg.price_70g : p.price;
+               variants.push({ label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: val });
             } else if (u === '500g') {
                let multiplier = (baseUnit === '70g') ? 5 : 1;
-               variants.push({ label: "Medio Kilo", labelEs: "Medio Kilo", labelEn: "500g", price: p.price * multiplier });
+               let val = (cfg.price_500g !== undefined && cfg.price_500g !== null) ? cfg.price_500g : p.price * multiplier;
+               variants.push({ label: "Medio Kilo", labelEs: "Medio Kilo", labelEn: "500g", price: val });
             } else if (u === 'kilo') {
                let multiplier = (baseUnit === '70g') ? 10 : (baseUnit === '500g') ? 2 : 1;
-               variants.push({ label: "1 kg", labelEs: "1 kg", labelEn: "1 kg", price: p.price * multiplier });
+               let val = (cfg.price_kilo !== undefined && cfg.price_kilo !== null) ? cfg.price_kilo : p.price * multiplier;
+               variants.push({ label: "1 kg", labelEs: "1 kg", labelEn: "1 kg", price: val });
             }
          });
          
@@ -78,6 +82,7 @@ async function applyAdminConfigs() {
 
          if (variants.length > 1) {
              p.variants = variants;
+             p.price = variants[0].price; // UI displays "desde X c/u"
          } else if (variants.length === 1) {
              p.price = variants[0].price;
              delete p.variants;

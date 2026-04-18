@@ -171,15 +171,7 @@
     const cloud = cloudConfigsMap[p.id];
     
     // Fallback if not configured in DB yet
-    let defUnitType = 'unit';
-    if (p.variants) {
-       if (p.variants.length > 1) defUnitType = '70g,kilo';
-       else defUnitType = '70g';
-    } else if (p.category === 'fresh') {
-       defUnitType = 'kilo';
-    } else if (p.category === 'flours') {
-       defUnitType = '500g';
-    }
+    let defUnitType = 'kilo';
     
     // Convert legacy singular formats to comma-separated format
     let finalUnits = defUnitType;

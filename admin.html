@@ -169,14 +169,7 @@
 
   function getProductConfig(p) {
     const cloud = cloudConfigsMap[p.id];
-    if (cloud) {
-       return {
-          price: cloud.price,
-          available: cloud.available,
-          featured: cloud.featured,
-          unitType: cloud.unit_type
-       };
-    }
+    
     // Fallback if not configured in DB yet
     let defUnitType = 'unit';
     if (p.variants) {

@@ -200,6 +200,55 @@ const PRODUCTS = [
     desc_en: "Tender pods ideal for thickening stews or eating pan-fried.",
     price: 1000,
   },
+  {
+    id: "katuk", category: "fresh", featured: false,
+    es: "Katuk", en: "Katuk (Sweet Leaf)",
+    desc_es: "Hojas nutritivas con sabor similar a guisantes dulces, excelentes para ensaladas o sopas.",
+    desc_en: "Nutritious leaves with a sweet pea flavor, excellent for salads or soups.",
+    price: 1000,
+  },
+  {
+    id: "limon-kaffir", category: "fresh", featured: false,
+    es: "Hoja de Limón Kaffir", en: "Kaffir Lime Leaf",
+    desc_es: "Hojas súper aromáticas, clave en la gastronomía asiática y tailandesa.",
+    desc_en: "Highly aromatic leaves, key to Asian and Thai gastronomy.",
+    price: 1000,
+  },
+  {
+    id: "sagu", category: "fresh", featured: false,
+    es: "Sagú (Arrowroot)", en: "Sago (Arrowroot) Root",
+    desc_es: "Raíz amilácea muy fácil de digerir, utilizada tradicionalmente como base nutritiva.",
+    desc_en: "Easily digestible starchy root, traditionally used as a nutritious base.",
+    price: 1000,
+  },
+  {
+    id: "guanabana", category: "fresh", featured: false,
+    es: "Guanábana", en: "Soursop",
+    desc_es: "Fruta tropical de pulpa blanca aromática con un delicioso sabor agridulce.",
+    desc_en: "Tropical fruit with aromatic white pulp and a delicious sweet-sour taste.",
+    price: 1000,
+  },
+  {
+    id: "cas", category: "fresh", featured: false,
+    es: "Cas", en: "Costa Rican Guava",
+    desc_es: "Clásico costarricense por excelencia, ideal para frescos y refrescos ácidos.",
+    desc_en: "Costa Rican classic, ideal for sour fresh juices and beverages.",
+    price: 1000,
+  },
+  {
+    id: "bitter-melon", category: "fresh", featured: false,
+    es: "Melón Amargo (Bitter Melon)", en: "Bitter Melon",
+    desc_es: "Vegetal muy saludable con sabor fuertemente amargo, excelente para la sangre.",
+    desc_en: "Very healthy vegetable with a distinct bitter flavor, excellent for the blood.",
+    price: 1000,
+  },
+  {
+    id: "galangal", category: "fresh", featured: false,
+    es: "Galangal", en: "Galangal",
+    desc_es: "Rizoma cítrico y pináceo pariente del jengibre, base esencial del picante tailandés.",
+    desc_en: "Citrusy and piney ginger relative, essential base of Thai spiciness.",
+    price: 1000,
+  },
 
   // ── Empacados ─────────────────────────────────────────────
   {

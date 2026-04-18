@@ -150,6 +150,13 @@ const PRODUCT_IMGS = {
   cayena:             { img: 'images/cayena.png' },
   jalapeno:           { img: 'images/jalapeno.png' },
   okra:               { img: 'images/okra.png' },
+  katuk:              { img: 'images/katuk.png' },
+  'limon-kaffir':     { img: 'images/limon-kaffir.png' },
+  sagu:               { img: 'images/sagu.png' },
+  guanabana:          { img: 'images/guanabana.png' },
+  cas:                { img: 'images/cas.png' },
+  'bitter-melon':     { img: 'images/bitter-melon.png' },
+  galangal:           { img: 'images/galangal.png' },
 };
 
 function getMediaImg(id) {

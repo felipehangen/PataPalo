@@ -22,12 +22,16 @@
     <h2>Panel de Administración</h2>
     <p>Finca PataPalo — Gestión de Precios</p>
     <div class="form-group">
+      <label for="admin-user">Usuario</label>
+      <input type="text" id="admin-user" placeholder="Ingresar usuario" />
+    </div>
+    <div class="form-group" style="margin-top: 1rem;">
       <label for="admin-password">Contraseña</label>
       <input type="password" id="admin-password" placeholder="Ingresar contraseña"
              onkeydown="if(event.key==='Enter') tryLogin()" />
-      <div class="login-error" id="login-error">Contraseña incorrecta. Inténtalo de nuevo.</div>
+      <div class="login-error" id="login-error" style="color: red; font-size: 0.85rem; margin-top: 0.5rem; display: none;">Credenciales incorrectas. Inténtalo de nuevo.</div>
     </div>
-    <button class="btn btn-primary" onclick="tryLogin()" style="width:100%; justify-content:center">
+    <button class="btn btn-primary" onclick="tryLogin()" style="width:100%; justify-content:center; margin-top: 1.5rem;">
       Ingresar
     </button>
     <p style="margin-top:1.5rem; font-size:0.8rem; color:var(--color-muted)">
@@ -59,17 +63,18 @@
     </div>
 
     <div class="admin-note">
-      ⚠️ <strong>Nota:</strong> Los precios se guardan en el caché local de este navegador (<code>localStorage</code>). Si borras el caché del navegador, los precios volverán a sus valores por defecto. Para un respaldo permanente, apunta los precios en un documento aparte.
+      ⚠️ <strong>Nota:</strong> Los datos se guardan en el caché local de este navegador (<code>localStorage</code>). No se sincronizan automáticamente con otros navegadores.
     </div>
 
     <div class="admin-table-wrap">
       <table class="admin-table">
         <thead>
           <tr>
-            <th>Producto</th>
-            <th>Categoría</th>
-            <th>Precio Actual (₡)</th>
-            <th>Precio por Defecto (₡)</th>
+            <th>Producto / Categoría</th>
+            <th>Precio (₡)</th>
+            <th>Tipo de Venta</th>
+            <th>Disponibilidad</th>
+            <th>Temporada</th>
           </tr>
         </thead>
         <tbody id="admin-table-body"></tbody>
@@ -95,13 +100,15 @@
 <script src="js/products.js"></script>
 <script>
   // ── Auth ──────────────────────────────────────────────
-  const ADMIN_PASSWORD = "patapalo2025"; // ← Cambiar esta línea para modificar la contraseña
+  const ADMIN_USER     = "bryan";
+  const ADMIN_PASSWORD = "mansionpatapalo";
   const SESSION_KEY    = "fp-admin-session";
 
   function tryLogin() {
-    const input = document.getElementById('admin-password').value;
+    const user = document.getElementById('admin-user').value.toLowerCase().trim();
+    const pass = document.getElementById('admin-password').value;
     const errEl = document.getElementById('login-error');
-    if (input === ADMIN_PASSWORD) {
+    if (user === ADMIN_USER && pass === ADMIN_PASSWORD) {
       sessionStorage.setItem(SESSION_KEY, "1");
       showApp();
     } else {
@@ -128,34 +135,65 @@
   }
 
   // ── Render Table ──────────────────────────────────────
-  function getCurrentPrice(id) {
-    const s = localStorage.getItem(`fp-price-${id}`);
-    const p = PRODUCTS.find(pr => pr.id === id);
-    return s !== null ? parseInt(s, 10) : (p ? p.price : 0);
+  function getProductConfig(p) {
+    const s = localStorage.getItem(`fp-config-${p.id}`);
+    if (s) {
+       try { return JSON.parse(s); } catch(e) {}
+    }
+    // Fallback def
+    let defUnitType = 'unit';
+    if (p.variants) {
+       if (p.variants.length > 1) defUnitType = '70g-1kg';
+       else defUnitType = '70g';
+    } else if (p.category === 'fresh') {
+       defUnitType = 'kilo';
+    }
+    return {
+       price: p.price,
+       available: true,
+       featured: !!p.featured,
+       unitType: defUnitType
+    };
   }
 
   const CAT_LABELS = {
-    fresh: 'Cultivo Fresco', packed: 'Empacados', chips: 'Chips',
-    spices: 'Especias en Polvo', flours: 'Harinas',
+    fresh: 'Fresco', packed: 'Empacados', chips: 'Chips',
+    spices: 'Especias', flours: 'Harinas',
     supplements: 'Suplementos', tea: 'Té'
   };
 
   function renderAdminTable() {
     const tbody = document.getElementById('admin-table-body');
     tbody.innerHTML = PRODUCTS.map(p => {
-      const current  = getCurrentPrice(p.id);
-      const def      = p.price;
-      const changed  = current !== def;
+      const conf = getProductConfig(p);
       return `
         <tr>
-          <td>${p.es}</td>
-          <td>${CAT_LABELS[p.category] || p.category}</td>
+          <td>
+            <strong>${p.es}</strong><br>
+            <small style="color:var(--c-muted)">${CAT_LABELS[p.category] || p.category} / Ref: ₡${p.price.toLocaleString('es-CR')}</small>
+          </td>
           <td>
             <input type="number" class="price-input" id="price-${p.id}"
-                   value="${current}" min="0" step="100"
-                   style="${changed ? 'border-color:var(--color-sage); color:var(--color-forest)' : ''}" />
+                   value="${conf.price}" min="0" step="50"
+                   style="width:80px; padding:0.25rem; border:1px solid var(--c-border); border-radius:4px;" />
           </td>
-          <td style="color:var(--color-muted)">₡${def.toLocaleString('es-CR')}</td>
+          <td>
+            <select id="unit-${p.id}" style="padding:0.25rem; border:1px solid var(--c-border); border-radius:4px;">
+              <option value="unit" ${conf.unitType==='unit'?'selected':''}>Por Unidad</option>
+              <option value="kilo" ${conf.unitType==='kilo'?'selected':''}>Por Kilo</option>
+              <option value="70g" ${conf.unitType==='70g'?'selected':''}>Bolsa 70g</option>
+              <option value="70g-1kg" ${conf.unitType==='70g-1kg'?'selected':''}>70g y Kilo</option>
+            </select>
+          </td>
+          <td>
+            <select id="avail-${p.id}" style="padding:0.25rem; border:1px solid var(--c-border); border-radius:4px;">
+              <option value="1" ${conf.available?'selected':''}>En Stock</option>
+              <option value="0" ${!conf.available?'selected':''}>Agotado</option>
+            </select>
+          </td>
+          <td style="text-align:center;">
+            <input type="checkbox" id="feat-${p.id}" ${conf.featured?'checked':''} style="transform:scale(1.2)" />
+          </td>
         </tr>`;
     }).join('');
   }
@@ -163,14 +201,19 @@
   // ── Save ──────────────────────────────────────────────
   function savePrices() {
     PRODUCTS.forEach(p => {
-      const input = document.getElementById(`price-${p.id}`);
-      if (input) {
-        const val = parseInt(input.value, 10);
-        if (!isNaN(val) && val >= 0) {
-          localStorage.setItem(`fp-price-${p.id}`, val);
-        }
+      const prInput = document.getElementById(`price-${p.id}`);
+      if (prInput) {
+        const val = parseInt(prInput.value, 10);
+        const config = {
+           price: isNaN(val) ? p.price : val,
+           available: document.getElementById(`avail-${p.id}`).value === "1",
+           featured: document.getElementById(`feat-${p.id}`).checked,
+           unitType: document.getElementById(`unit-${p.id}`).value
+        };
+        localStorage.setItem(`fp-config-${p.id}`, JSON.stringify(config));
       }
     });
+    
     renderAdminTable();
     const fb = document.getElementById('save-feedback');
     fb.classList.add('show');
@@ -179,13 +222,13 @@
 
   // ── Reset ─────────────────────────────────────────────
   function resetPrices() {
-    if (!confirm('¿Estás seguro de que deseas restablecer TODOS los precios a sus valores por defecto?')) return;
-    PRODUCTS.forEach(p => localStorage.removeItem(`fp-price-${p.id}`));
+    if (!confirm('¿Estás seguro de que deseas restablecer TODOS los datos a sus valores por defecto?')) return;
+    PRODUCTS.forEach(p => localStorage.removeItem(`fp-config-${p.id}`));
     renderAdminTable();
     const fb = document.getElementById('save-feedback');
-    fb.textContent = '↺ Precios restablecidos a valores por defecto';
+    fb.textContent = '↺ Valores restablecidos';
     fb.classList.add('show');
-    setTimeout(() => { fb.classList.remove('show'); fb.textContent = '✅ Precios guardados correctamente'; }, 3000);
+    setTimeout(() => { fb.classList.remove('show'); fb.textContent = '✅ Valores guardados correctamente'; }, 3000);
   }
 </script>
 </body>

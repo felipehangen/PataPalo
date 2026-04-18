@@ -22,18 +22,43 @@ function setLang(lang) {
   renderCart();
 }
 
-// ── Price helpers ─────────────────────────────────────────
-function getOverrides() {
-  try { return JSON.parse(localStorage.getItem('pp_prices') || '{}'); } catch { return {}; }
+// ── App Settings (Admin Configs) ──────────────────────────
+function applyAdminConfigs() {
+  PRODUCTS.forEach(p => {
+    const s = localStorage.getItem(`fp-config-${p.id}`);
+    if (s) {
+       try {
+         const cfg = JSON.parse(s);
+         p.price = cfg.price !== undefined ? cfg.price : p.price;
+         p.featured = cfg.featured !== undefined ? cfg.featured : p.featured;
+         p.available = cfg.available !== undefined ? cfg.available : true;
+         if (cfg.unitType) {
+           if (cfg.unitType === 'unit' || cfg.unitType === 'kilo') {
+             delete p.variants;
+           } else if (cfg.unitType === '70g') {
+             p.variants = [
+               { label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price }
+             ];
+           } else if (cfg.unitType === '70g-1kg') {
+             p.variants = [
+               { label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price },
+               { label: "1 kg", labelEs: "1 kg", labelEn: "1 kg", price: p.price * 10 }
+             ];
+           }
+         }
+       } catch(e) {}
+    } else {
+       p.available = true; 
+    }
+  });
 }
+
 function getProductPrice(product, variantIdx = null) {
-  const overrides = getOverrides();
   if (product.variants && variantIdx !== null) {
     const v = product.variants[variantIdx];
-    const key = `${product.id}_v${variantIdx}`;
-    return overrides[key] ?? v.price;
+    return v ? v.price : product.price;
   }
-  return overrides[product.id] ?? product.price;
+  return product.price;
 }
 function formatPrice(p) {
   return '\u20A1' + p.toLocaleString('es-CR');
@@ -230,7 +255,7 @@ function renderFeatured() {
   const container = document.getElementById('featured-scroll');
   if (!container) return;
 
-  const featured = PRODUCTS.filter(p => p.featured);
+  const featured = PRODUCTS.filter(p => p.featured && p.available);
   container.innerHTML = featured.map(p => {
     const name = currentLang === 'es' ? p.es : p.en;
     const desc = currentLang === 'es' ? p.desc_es : p.desc_en;
@@ -328,26 +353,27 @@ function renderProducts(cat = 'all') {
           </button>`).join('')}
       </div>` : '';
 
+    const priceHtml = p.available ? formatPrice(price) : `<span style="color:var(--c-muted);font-size:0.9rem">${currentLang === 'es' ? 'Agotado' : 'Out of Stock'}</span>`;
+    const addBtnHtml = p.available
+      ? `<button class="tactile-add-btn ${inCart ? 'in-cart' : ''}" data-cart-key="${key}" onclick="addToCart('${p.id}', ${variantIdx})">${inCart ? '✓ Listo' : (currentLang === 'es' ? 'Agregar' : 'Add')}</button>`
+      : `<div class="tactile-add-btn" style="background:var(--c-border);color:var(--c-muted);pointer-events:none;">${currentLang === 'es' ? 'Agotado' : 'Out of Stock'}</div>`;
+
     return `
     <div class="product-card">
-      <div class="product-img-wrap">
+      <div class="product-img-wrap" style="${!p.available ? 'opacity:0.6; filter:grayscale(1)' : ''}">
         ${img
           ? `<img src="${img}" alt="${name}" loading="lazy" />`
           : `<div class="product-emoji-fallback">${emoji}</div>`}
         <div class="product-cat-badge">${catBadge}</div>
         <div class="product-org-badge">${orgBadge}</div>
       </div>
-      <div class="product-body">
+      <div class="product-body" style="${!p.available ? 'opacity:0.6; filter:grayscale(1)' : ''}">
         <div class="product-name">${name}</div>
         <div class="product-desc">${desc || ''}</div>
         ${sizePills}
         <div class="product-footer">
-          <div class="product-price">${formatPrice(price)}</div>
-          <button class="tactile-add-btn ${inCart ? 'in-cart' : ''}"
-            data-cart-key="${key}"
-            onclick="addToCart('${p.id}', ${variantIdx})">
-            ${inCart ? '✓ Listo' : 'Agregar'}
-          </button>
+          <div class="product-price">${priceHtml}</div>
+          ${addBtnHtml}
         </div>
       </div>
     </div>`;
@@ -411,6 +437,7 @@ function initHeroCTA() {
 
 // ── Init ──────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  applyAdminConfigs();
   setLang(currentLang);
   initNav();
   initCart();

@@ -118,9 +118,9 @@ const PRODUCTS = [
   },
   {
     id: "camote", category: "fresh", featured: false,
-    es: "Camote Morado", en: "Purple Sweet Potato",
-    desc_es: "Repleto de antocianinas. Color y sabor únicos.",
-    desc_en: "Packed with anthocyanins. Unique color and flavor.",
+    es: "Camote Anaranjado", en: "Orange Sweet Potato",
+    desc_es: "Rico en betacaroteno. Color vibrante y sabor dulce y cremoso.",
+    desc_en: "Rich in beta-carotene. Vibrant color with a sweet and creamy flavor.",
     price: 1000,
   },
   {

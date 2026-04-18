@@ -162,7 +162,7 @@
 
   async function fetchCloudData() {
      if (!window.db) return;
-     const { data, error } = await db.from('product_configs').select('*');
+     const { data, error } = await db.from('fincapatapalo_product_configs').select('*');
      if (!error && data) {
         data.forEach(c => cloudConfigsMap[c.id] = c);
      }
@@ -258,7 +258,7 @@
     });
     
     if (window.db) {
-       const { error } = await db.from('product_configs').upsert(payload);
+       const { error } = await db.from('fincapatapalo_product_configs').upsert(payload);
        if (error) {
           alert('Error al guardar en Supabase: ' + error.message);
        } else {

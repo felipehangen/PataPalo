@@ -27,7 +27,7 @@ async function applyAdminConfigs() {
   let cloudConfigs = [];
   
   if (window.db) {
-     const { data, error } = await db.from('product_configs').select('*');
+     const { data, error } = await db.from('fincapatapalo_product_configs').select('*');
      if (!error && data) {
         cloudConfigs = data;
      } else {

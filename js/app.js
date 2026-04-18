@@ -54,6 +54,10 @@ async function applyAdminConfigs() {
        if (cfg.unitType) {
          if (cfg.unitType === 'unit' || cfg.unitType === 'kilo') {
            delete p.variants;
+         } else if (cfg.unitType === '500g') {
+           p.variants = [
+             { label: "Medio Kilo", labelEs: "Medio Kilo", labelEn: "500g", price: p.price }
+           ];
          } else if (cfg.unitType === '70g') {
            p.variants = [
              { label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price }

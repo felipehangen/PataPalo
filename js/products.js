@@ -240,21 +240,21 @@ const PRODUCTS = [
   // ── Harinas ───────────────────────────────────────────────
   {
     id: "harina-yuca", category: "flours", featured: false,
-    es: "Harina de Yuca (½ kg)", en: "Cassava Flour (½ kg)",
+    es: "Harina de Yuca", en: "Cassava Flour",
     desc_es: "Sin gluten, sabor neutro. Perfecta para panadería.",
     desc_en: "Gluten-free, neutral flavour. Perfect for baking.",
     price: 5000,
   },
   {
     id: "harina-platano", category: "flours", featured: false,
-    es: "Harina de Plátano (½ kg)", en: "Plantain Flour (½ kg)",
+    es: "Harina de Plátano", en: "Plantain Flour",
     desc_es: "Alta en resistente almidón. Prebiótico natural.",
     desc_en: "High in resistant starch. Natural prebiotic.",
     price: 5000,
   },
   {
     id: "harina-camote", category: "flours", featured: false,
-    es: "Harina de Camote Morado (½ kg)", en: "Purple Sweet Potato Flour (½ kg)",
+    es: "Harina de Camote Morado", en: "Purple Sweet Potato Flour",
     desc_es: "Color violeta natural, rica en antocianinas.",
     desc_en: "Natural violet colour, rich in anthocyanins.",
     price: 5000,

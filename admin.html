@@ -185,6 +185,8 @@
        else defUnitType = '70g';
     } else if (p.category === 'fresh') {
        defUnitType = 'kilo';
+    } else if (p.category === 'flours') {
+       defUnitType = '500g';
     }
     return {
        price: p.price,
@@ -219,6 +221,7 @@
             <select id="unit-${p.id}" style="padding:0.25rem; border:1px solid var(--c-border); border-radius:4px;">
               <option value="unit" ${conf.unitType==='unit'?'selected':''}>Por Unidad</option>
               <option value="kilo" ${conf.unitType==='kilo'?'selected':''}>Por Kilo</option>
+              <option value="500g" ${conf.unitType==='500g'?'selected':''}>Medio Kilo (500g)</option>
               <option value="70g" ${conf.unitType==='70g'?'selected':''}>Bolsa 70g</option>
               <option value="70g-1kg" ${conf.unitType==='70g-1kg'?'selected':''}>70g y Kilo</option>
             </select>

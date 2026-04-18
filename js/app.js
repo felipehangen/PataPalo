@@ -459,6 +459,7 @@ function renderProducts(cat = 'all') {
 
 function selectVariant(productId, variantIdx) {
   selectedVariants[productId] = variantIdx;
+  renderFeatured();
   renderProducts(currentCategory);
 }
 

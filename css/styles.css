@@ -305,7 +305,7 @@ h1,h2,h3,h4 { font-family: var(--font-head); line-height: 1.1; color: var(--c-ol
   font-weight: 900;
   color: var(--c-olive);
 }
-.featured-title span { color: var(--c-forest); text-decoration: underline wavy var(--c-amber); text-underline-offset: 4px; }
+.featured-title span { color: var(--c-forest); border-bottom: 4px solid var(--c-amber); padding-bottom: 1px; }
 .featured-subtitle {
   font-size: 0.82rem;
   color: var(--c-muted);

@@ -3,8 +3,10 @@
 //  Cart | Language | Featured Strip | Product Grid | Variants
 // ============================================================
 
-// ── Language ─────────────────────────────────────────────
+// ── State Variables ─────────────────────────────────────────
 let currentLang = localStorage.getItem('pp_lang') || 'es';
+let currentCategory = 'all';
+const selectedVariants = {};
 
 function setLang(lang) {
   currentLang = lang;
@@ -370,10 +372,6 @@ function renderFeatured() {
 }
 
 // ── Products Grid ─────────────────────────────────────────
-let currentCategory = 'all';
-
-// Track selected variant per product
-const selectedVariants = {};
 
 function renderCategoryTabs() {
   const container = document.getElementById('category-tabs');

@@ -205,10 +205,10 @@
        available: cloud ? cloud.available : true,
        featured: cloud ? cloud.featured : !!p.featured,
        unitType: legacyUnit,
-       p_unit: (cloud && cloud.price_unit) ? cloud.price_unit : price_base,
-       p_70g: (cloud && cloud.price_70g) ? cloud.price_70g : price_base * pre_70g_multi,
-       p_500g: (cloud && cloud.price_500g) ? cloud.price_500g : price_base * pre_500g_multi,
-       p_kilo: (cloud && cloud.price_kilo) ? cloud.price_kilo : price_base * pre_kilo_multi
+       p_unit: (cloud && cloud.price_unit != null) ? cloud.price_unit : ((!cloud || cloud.price_unit === undefined) ? price_base : ''),
+       p_70g: (cloud && cloud.price_70g != null) ? cloud.price_70g : ((!cloud || cloud.price_70g === undefined) ? price_base * pre_70g_multi : ''),
+       p_500g: (cloud && cloud.price_500g != null) ? cloud.price_500g : ((!cloud || cloud.price_500g === undefined) ? price_base * pre_500g_multi : ''),
+       p_kilo: (cloud && cloud.price_kilo != null) ? cloud.price_kilo : ((!cloud || cloud.price_kilo === undefined) ? price_base * pre_kilo_multi : '')
     };
   }
 

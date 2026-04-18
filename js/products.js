@@ -270,8 +270,8 @@ const PRODUCTS = [
   {
     id: "chips-mixtos", category: "chips", featured: true,
     es: "Chips Mixtos de Temporada", en: "Seasonal Mixed Chips",
-    desc_es: "Yuca · Malanga · Camote · Plátano. Crujientes y sin aceite industrial.",
-    desc_en: "Cassava · Malanga · Sweet Potato · Plantain. Crunchy, no industrial oil.",
+    desc_es: "Yuca · Malanga · Camote · Plátano. Crujientes, con cúrcuma y pimienta, sin aceite industrial.",
+    desc_en: "Cassava · Malanga · Sweet Potato · Plantain. Crunchy, with turmeric and pepper, no industrial oil.",
     price: 1000,
   },
 

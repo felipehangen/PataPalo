@@ -52,21 +52,37 @@ async function applyAdminConfigs() {
        p.featured = cfg.featured !== undefined ? cfg.featured : p.featured;
        p.available = cfg.available !== undefined ? cfg.available : true;
        if (cfg.unitType) {
-         if (cfg.unitType === 'unit' || cfg.unitType === 'kilo') {
-           delete p.variants;
-         } else if (cfg.unitType === '500g') {
-           p.variants = [
-             { label: "Medio Kilo", labelEs: "Medio Kilo", labelEn: "500g", price: p.price }
-           ];
-         } else if (cfg.unitType === '70g') {
-           p.variants = [
-             { label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price }
-           ];
-         } else if (cfg.unitType === '70g-1kg') {
-           p.variants = [
-             { label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price },
-             { label: "1 kg", labelEs: "1 kg", labelEn: "1 kg", price: p.price * 10 }
-           ];
+         const units = cfg.unitType.split(',');
+         
+         let baseUnit = units.includes('70g') ? '70g' : 
+                        units.includes('500g') ? '500g' : 
+                        units.includes('kilo') ? 'kilo' : 'unit';
+
+         let variants = [];
+         units.forEach(u => {
+            if (u === 'unit') {
+               variants.push({ label: "Por Unidad", labelEs: "Por Unidad", labelEn: "Per Unit", price: p.price });
+            } else if (u === '70g') {
+               variants.push({ label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price });
+            } else if (u === '500g') {
+               let multiplier = (baseUnit === '70g') ? 5 : 1;
+               variants.push({ label: "Medio Kilo", labelEs: "Medio Kilo", labelEn: "500g", price: p.price * multiplier });
+            } else if (u === 'kilo') {
+               let multiplier = (baseUnit === '70g') ? 10 : (baseUnit === '500g') ? 2 : 1;
+               variants.push({ label: "1 kg", labelEs: "1 kg", labelEn: "1 kg", price: p.price * multiplier });
+            }
+         });
+         
+         // Sort variants by price ascending
+         variants.sort((a, b) => a.price - b.price);
+
+         if (variants.length > 1) {
+             p.variants = variants;
+         } else if (variants.length === 1) {
+             p.price = variants[0].price;
+             delete p.variants;
+         } else {
+             delete p.variants;
          }
        }
     } else {

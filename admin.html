@@ -181,18 +181,23 @@
     // Fallback if not configured in DB yet
     let defUnitType = 'unit';
     if (p.variants) {
-       if (p.variants.length > 1) defUnitType = '70g-1kg';
+       if (p.variants.length > 1) defUnitType = '70g,kilo';
        else defUnitType = '70g';
     } else if (p.category === 'fresh') {
        defUnitType = 'kilo';
     } else if (p.category === 'flours') {
        defUnitType = '500g';
     }
+    
+    // Convert legacy singular formats to comma-separated format
+    let finalUnits = defUnitType;
+    if (cloud && cloud.unit_type === '70g-1kg') finalUnits = '70g,kilo';
+    
     return {
-       price: p.price,
-       available: true,
-       featured: !!p.featured,
-       unitType: defUnitType
+       price: cloud ? cloud.price : p.price,
+       available: cloud ? cloud.available : true,
+       featured: cloud ? cloud.featured : !!p.featured,
+       unitType: cloud ? (cloud.unit_type === '70g-1kg' ? '70g,kilo' : cloud.unit_type) : finalUnits
     };
   }
 
@@ -218,13 +223,12 @@
                    style="width:80px; padding:0.25rem; border:1px solid var(--c-border); border-radius:4px;" />
           </td>
           <td>
-            <select id="unit-${p.id}" style="padding:0.25rem; border:1px solid var(--c-border); border-radius:4px;">
-              <option value="unit" ${conf.unitType==='unit'?'selected':''}>Por Unidad</option>
-              <option value="kilo" ${conf.unitType==='kilo'?'selected':''}>Por Kilo</option>
-              <option value="500g" ${conf.unitType==='500g'?'selected':''}>Medio Kilo (500g)</option>
-              <option value="70g" ${conf.unitType==='70g'?'selected':''}>Bolsa 70g</option>
-              <option value="70g-1kg" ${conf.unitType==='70g-1kg'?'selected':''}>70g y Kilo</option>
-            </select>
+            <div style="display:flex; flex-direction:column; gap:6px; font-size:0.85rem;">
+              <label style="display:flex; align-items:center; gap:4px; font-weight:normal; color:inherit; font-family:inherit; margin:0;"><input type="checkbox" id="u-unit-${p.id}" ${conf.unitType.includes('unit')?'checked':''}> Por Unidad</label>
+              <label style="display:flex; align-items:center; gap:4px; font-weight:normal; color:inherit; font-family:inherit; margin:0;"><input type="checkbox" id="u-70g-${p.id}" ${conf.unitType.includes('70g')?'checked':''}> Bolsa 70g</label>
+              <label style="display:flex; align-items:center; gap:4px; font-weight:normal; color:inherit; font-family:inherit; margin:0;"><input type="checkbox" id="u-500g-${p.id}" ${conf.unitType.includes('500g')?'checked':''}> Medio Kilo</label>
+              <label style="display:flex; align-items:center; gap:4px; font-weight:normal; color:inherit; font-family:inherit; margin:0;"><input type="checkbox" id="u-kilo-${p.id}" ${conf.unitType.includes('kilo')?'checked':''}> 1 Kilo</label>
+            </div>
           </td>
           <td>
             <select id="avail-${p.id}" style="padding:0.25rem; border:1px solid var(--c-border); border-radius:4px;">
@@ -250,12 +254,18 @@
       const prInput = document.getElementById(`price-${p.id}`);
       if (prInput) {
         const val = parseInt(prInput.value, 10);
+        let u = [];
+        if (document.getElementById(`u-unit-${p.id}`).checked) u.push('unit');
+        if (document.getElementById(`u-70g-${p.id}`).checked) u.push('70g');
+        if (document.getElementById(`u-500g-${p.id}`).checked) u.push('500g');
+        if (document.getElementById(`u-kilo-${p.id}`).checked) u.push('kilo');
+        
         payload.push({
            id: p.id,
            price: isNaN(val) ? p.price : val,
            available: document.getElementById(`avail-${p.id}`).value === "1",
            featured: document.getElementById(`feat-${p.id}`).checked,
-           unit_type: document.getElementById(`unit-${p.id}`).value
+           unit_type: u.join(',') || 'unit'
         });
       }
     });

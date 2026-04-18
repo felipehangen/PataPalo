@@ -314,19 +314,35 @@ function orderViaWhatsApp(e) {
 
 // ── Featured Strip ────────────────────────────────────────
 function renderFeatured() {
-  const container = document.getElementById('featured-scroll');
+  const container = document.getElementById('featured-scroller');
   if (!container) return;
 
   const featured = PRODUCTS.filter(p => p.featured && p.available);
   container.innerHTML = featured.map(p => {
     const name = currentLang === 'es' ? p.es : p.en;
     const desc = currentLang === 'es' ? p.desc_es : p.desc_en;
-    const price = getProductPrice(p, p.variants ? 0 : null);
     const img = getMediaImg(p.id);
     const emoji = getMediaEmoji(p.id);
-    const key = cartKey(p.id, p.variants ? 0 : null);
+
+    if (p.variants && selectedVariants[p.id] === undefined) {
+      selectedVariants[p.id] = 0;
+    }
+    const variantIdx = p.variants ? selectedVariants[p.id] : null;
+
+    const price = getProductPrice(p, variantIdx);
+    const key = cartKey(p.id, variantIdx);
     const inCart = cartItems.some(i => i.cartKey === key);
     const freshLabel = currentLang === 'es' ? '⚡ Temporada' : '⚡ In Season';
+
+    // Size selector pills
+    const sizePills = p.variants ? `
+      <div class="size-selector" style="margin-top:0.5rem; justify-content:flex-start;">
+        ${p.variants.map((v, idx) => `
+          <button class="size-pill ${idx === variantIdx ? 'selected' : ''}"
+            onclick="selectVariant('${p.id}', ${idx})">
+            ${currentLang === 'es' ? v.labelEs : v.labelEn}
+          </button>`).join('')}
+      </div>` : '';
 
     return `
     <div class="featured-card">
@@ -339,12 +355,13 @@ function renderFeatured() {
       <div class="featured-card-body">
         <div class="featured-card-name">${name}</div>
         <div class="featured-card-desc">${desc || ''}</div>
-        <div class="featured-card-footer">
+        ${sizePills}
+        <div class="featured-card-footer" style="margin-top: 1rem;">
           <div class="featured-price">${formatPrice(price)}</div>
           <button class="tactile-add-btn ${inCart ? 'in-cart' : ''}"
             data-cart-key="${key}"
-            onclick="addToCart('${p.id}', ${p.variants ? 0 : null})">
-            ${inCart ? '✓ Listo' : 'Agregar'}
+            onclick="addToCart('${p.id}', ${variantIdx})">
+            ${inCart ? (currentLang === 'es' ? '✓ Listo' : '✓ Added') : (currentLang === 'es' ? 'Agregar' : 'Add')}
           </button>
         </div>
       </div>
@@ -417,7 +434,7 @@ function renderProducts(cat = 'all') {
 
     const priceHtml = p.available ? formatPrice(price) : `<span style="color:var(--c-muted);font-size:0.9rem">${currentLang === 'es' ? 'Agotado' : 'Out of Stock'}</span>`;
     const addBtnHtml = p.available
-      ? `<button class="tactile-add-btn ${inCart ? 'in-cart' : ''}" data-cart-key="${key}" onclick="addToCart('${p.id}', ${variantIdx})">${inCart ? '✓ Listo' : (currentLang === 'es' ? 'Agregar' : 'Add')}</button>`
+      ? `<button class="tactile-add-btn ${inCart ? 'in-cart' : ''}" data-cart-key="${key}" onclick="addToCart('${p.id}', ${variantIdx})">${inCart ? (currentLang === 'es' ? '✓ Listo' : '✓ Added') : (currentLang === 'es' ? 'Agregar' : 'Add')}</button>`
       : `<div class="tactile-add-btn" style="background:var(--c-border);color:var(--c-muted);pointer-events:none;">${currentLang === 'es' ? 'Agotado' : 'Out of Stock'}</div>`;
 
     return `

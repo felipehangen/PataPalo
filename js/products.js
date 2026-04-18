@@ -91,8 +91,8 @@ const PRODUCTS = [
   {
     id: "sacha-fresco", category: "fresh", featured: false,
     es: "Sacha-inchi Fresco", en: "Fresh Sacha-inchi",
-    desc_es: "La semilla omega-3 más potente de la naturaleza.",
-    desc_en: "Nature's most potent omega-3 seed.",
+    desc_es: "Semilla con alto contenido de Omega 3, 6 y 9. Excelente alimento para el cerebro (Brain food).",
+    desc_en: "Seed rich in Omega 3, 6, and 9. Excellent brain food.",
     price: 1000,
   },
   {
@@ -279,8 +279,8 @@ const PRODUCTS = [
   {
     id: "sacha-polvo", category: "spices", featured: false,
     es: "Polvo de Sacha-inchi", en: "Sacha-inchi Powder",
-    desc_es: "Proteína vegetal completa en polvo fino. Superpoder nutricional.",
-    desc_en: "Complete plant protein in fine powder. Nutritional superpower.",
+    desc_es: "Polvo de proteína con altísimo contenido de Omega 3, 6 y 9. Alimento espectacular para el cerebro.",
+    desc_en: "Protein powder with high Omega 3, 6, and 9. Amazing brain food.",
     price: 1000,
   },
   {

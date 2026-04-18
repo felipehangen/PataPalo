@@ -23,30 +23,48 @@ function setLang(lang) {
 }
 
 // ── App Settings (Admin Configs) ──────────────────────────
-function applyAdminConfigs() {
+async function applyAdminConfigs() {
+  let cloudConfigs = [];
+  
+  if (window.db) {
+     const { data, error } = await db.from('product_configs').select('*');
+     if (!error && data) {
+        cloudConfigs = data;
+     } else {
+        console.warn("No se pudo cargar desde Supabase, o esta vacía.", error);
+     }
+  }
+
   PRODUCTS.forEach(p => {
-    const s = localStorage.getItem(`fp-config-${p.id}`);
-    if (s) {
-       try {
-         const cfg = JSON.parse(s);
-         p.price = cfg.price !== undefined ? cfg.price : p.price;
-         p.featured = cfg.featured !== undefined ? cfg.featured : p.featured;
-         p.available = cfg.available !== undefined ? cfg.available : true;
-         if (cfg.unitType) {
-           if (cfg.unitType === 'unit' || cfg.unitType === 'kilo') {
-             delete p.variants;
-           } else if (cfg.unitType === '70g') {
-             p.variants = [
-               { label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price }
-             ];
-           } else if (cfg.unitType === '70g-1kg') {
-             p.variants = [
-               { label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price },
-               { label: "1 kg", labelEs: "1 kg", labelEn: "1 kg", price: p.price * 10 }
-             ];
-           }
+    // Buscar en la nube primero, hacer fallback a localStorage
+    let cfg = cloudConfigs.find(c => c.id === p.id);
+    let s = localStorage.getItem(`fp-config-${p.id}`);
+    
+    if (cfg) {
+       // Adaptar formato base de datos a formato de la app
+       cfg.unitType = cfg.unit_type; // remap from db
+    } else if (s) {
+       try { cfg = JSON.parse(s); } catch(e) {}
+    }
+
+    if (cfg) {
+       p.price = cfg.price !== undefined ? cfg.price : p.price;
+       p.featured = cfg.featured !== undefined ? cfg.featured : p.featured;
+       p.available = cfg.available !== undefined ? cfg.available : true;
+       if (cfg.unitType) {
+         if (cfg.unitType === 'unit' || cfg.unitType === 'kilo') {
+           delete p.variants;
+         } else if (cfg.unitType === '70g') {
+           p.variants = [
+             { label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price }
+           ];
+         } else if (cfg.unitType === '70g-1kg') {
+           p.variants = [
+             { label: "70g", labelEs: "Bolsa 70g", labelEn: "70g bag", price: p.price },
+             { label: "1 kg", labelEs: "1 kg", labelEn: "1 kg", price: p.price * 10 }
+           ];
          }
-       } catch(e) {}
+       }
     } else {
        p.available = true; 
     }
@@ -436,8 +454,8 @@ function initHeroCTA() {
 }
 
 // ── Init ──────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  applyAdminConfigs();
+document.addEventListener('DOMContentLoaded', async () => {
+  await applyAdminConfigs();
   setLang(currentLang);
   initNav();
   initCart();

@@ -97,50 +97,88 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
 <script src="js/products.js"></script>
 <script>
-  // ── Auth ──────────────────────────────────────────────
-  const ADMIN_USER     = "bryan";
-  const ADMIN_PASSWORD = "mansionpatapalo";
-  const SESSION_KEY    = "fp-admin-session";
-
-  function tryLogin() {
-    const user = document.getElementById('admin-user').value.toLowerCase().trim();
+  // ── Auth con Supabase ─────────────────────────────────
+  async function tryLogin() {
+    const userEmail = document.getElementById('admin-user').value.toLowerCase().trim();
     const pass = document.getElementById('admin-password').value;
     const errEl = document.getElementById('login-error');
-    if (user === ADMIN_USER && pass === ADMIN_PASSWORD) {
-      sessionStorage.setItem(SESSION_KEY, "1");
-      showApp();
-    } else {
+    const loginBtn = document.querySelector('button[onclick="tryLogin()"]');
+
+    if (!window.db) {
+       alert('Supabase no está configurado. Añade las llaves a js/supabase-config.js y asegúrate de crear el usuario admin primero.');
+       return;
+    }
+
+    loginBtn.textContent = "Verificando...";
+    loginBtn.disabled = true;
+
+    const { data, error } = await db.auth.signInWithPassword({
+      email: userEmail,
+      password: pass,
+    });
+
+    loginBtn.textContent = "Ingresar";
+    loginBtn.disabled = false;
+
+    if (error) {
+      errEl.textContent = "Credenciales incorrectas o usuario no existe.";
       errEl.style.display = 'block';
-      document.getElementById('admin-password').value = '';
-      document.getElementById('admin-password').focus();
+    } else {
+      errEl.style.display = 'none';
+      await loadApp();
     }
   }
 
-  function logout() {
-    sessionStorage.removeItem(SESSION_KEY);
+  async function logout() {
+    if (window.db) {
+       await db.auth.signOut();
+    }
     location.reload();
   }
 
-  function showApp() {
+  async function loadApp() {
     document.getElementById('admin-login-screen').style.display = 'none';
     document.getElementById('admin-app').style.display = 'block';
+    await fetchCloudData();
     renderAdminTable();
   }
 
-  // Check session on load
-  if (sessionStorage.getItem(SESSION_KEY) === "1") {
-    window.addEventListener('DOMContentLoaded', showApp);
+  // Check Supabase session on load
+  window.addEventListener('DOMContentLoaded', async () => {
+     if (window.db) {
+        const { data } = await db.auth.getSession();
+        if (data.session) {
+           loadApp();
+        }
+     }
+  });
+
+  // ── Gestión de Datos ──────────────────────────────────
+  let cloudConfigsMap = {};
+
+  async function fetchCloudData() {
+     if (!window.db) return;
+     const { data, error } = await db.from('product_configs').select('*');
+     if (!error && data) {
+        data.forEach(c => cloudConfigsMap[c.id] = c);
+     }
   }
 
-  // ── Render Table ──────────────────────────────────────
   function getProductConfig(p) {
-    const s = localStorage.getItem(`fp-config-${p.id}`);
-    if (s) {
-       try { return JSON.parse(s); } catch(e) {}
+    const cloud = cloudConfigsMap[p.id];
+    if (cloud) {
+       return {
+          price: cloud.price,
+          available: cloud.available,
+          featured: cloud.featured,
+          unitType: cloud.unit_type
+       };
     }
-    // Fallback def
+    // Fallback if not configured in DB yet
     let defUnitType = 'unit';
     if (p.variants) {
        if (p.variants.length > 1) defUnitType = '70g-1kg';
@@ -199,36 +237,63 @@
   }
 
   // ── Save ──────────────────────────────────────────────
-  function savePrices() {
+  async function savePrices() {
+    const btn = document.querySelector('.admin-save-bar .btn-primary');
+    btn.textContent = "⏳ Guardando en la nube...";
+    btn.disabled = true;
+
+    const payload = [];
     PRODUCTS.forEach(p => {
       const prInput = document.getElementById(`price-${p.id}`);
       if (prInput) {
         const val = parseInt(prInput.value, 10);
-        const config = {
+        payload.push({
+           id: p.id,
            price: isNaN(val) ? p.price : val,
            available: document.getElementById(`avail-${p.id}`).value === "1",
            featured: document.getElementById(`feat-${p.id}`).checked,
-           unitType: document.getElementById(`unit-${p.id}`).value
-        };
-        localStorage.setItem(`fp-config-${p.id}`, JSON.stringify(config));
+           unit_type: document.getElementById(`unit-${p.id}`).value
+        });
       }
     });
     
+    if (window.db) {
+       const { error } = await db.from('product_configs').upsert(payload);
+       if (error) {
+          alert('Error al guardar en Supabase: ' + error.message);
+       } else {
+          // Re-fetch locally to sync memory
+          await fetchCloudData();
+       }
+    } else {
+       // Localstorage fallback si no hay supabase auth (modo demo)
+       PRODUCTS.forEach(p => {
+          const row = payload.find(r => r.id === p.id);
+          localStorage.setItem(`fp-config-${p.id}`, JSON.stringify({
+            price: row.price,
+            available: row.available,
+            featured: row.featured,
+            unitType: row.unit_type
+          }));
+       });
+       cloudConfigsMap = {}; // force fallback logic locally
+    }
+
     renderAdminTable();
+    btn.textContent = "💾 Guardar Precios";
+    btn.disabled = false;
+
     const fb = document.getElementById('save-feedback');
     fb.classList.add('show');
     setTimeout(() => fb.classList.remove('show'), 3000);
   }
 
   // ── Reset ─────────────────────────────────────────────
-  function resetPrices() {
-    if (!confirm('¿Estás seguro de que deseas restablecer TODOS los datos a sus valores por defecto?')) return;
+  async function resetPrices() {
+    if (!confirm('¿Estás seguro de que deseas restablecer TODOS los datos en la base de datos? Esto requiere limpiar las filas manualmente desde Supabase Dashboard o recrearlas.')) return;
     PRODUCTS.forEach(p => localStorage.removeItem(`fp-config-${p.id}`));
-    renderAdminTable();
-    const fb = document.getElementById('save-feedback');
-    fb.textContent = '↺ Valores restablecidos';
-    fb.classList.add('show');
-    setTimeout(() => { fb.classList.remove('show'); fb.textContent = '✅ Valores guardados correctamente'; }, 3000);
+    // Supabase erase logic needs explicit deletion keys, skipping implicit mass-delete here for safety.
+    alert('Funcionalidad de limpieza en masa local completada. Para limpiar la Nube, por favor borra los datos desde la interfaz web de Supabase.');
   }
 </script>
 </body>

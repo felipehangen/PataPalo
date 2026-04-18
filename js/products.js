@@ -144,6 +144,62 @@ const PRODUCTS = [
     desc_en: "Creamy tropical nuts, rich in healthy carbohydrates.",
     price: 1000,
   },
+  {
+    id: "mimbro", category: "fresh", featured: false,
+    es: "Mimbro", en: "Cucumber Tree Fruit (Bilimbi)",
+    desc_es: "Fruta exótica muy ácida y crujiente, perfecta para encurtidos y salsas.",
+    desc_en: "Very sour and crunchy exotic fruit, perfect for pickles and sauces.",
+    price: 1000,
+  },
+  {
+    id: "ackee", category: "fresh", featured: false,
+    es: "Ackee", en: "Ackee",
+    desc_es: "Fruta emblemática de Jamaica, suave como mantequilla al cocinarse.",
+    desc_en: "Iconic Jamaican fruit, with a buttery texture when cooked.",
+    price: 1000,
+  },
+  {
+    id: "kumquat", category: "fresh", featured: false,
+    es: "Kumquat", en: "Kumquat",
+    desc_es: "Pequeños cítricos que se comen enteros. Piel dulce e interior ácido.",
+    desc_en: "Small citrus fruits eaten whole. Sweet peel and sour inside.",
+    price: 1000,
+  },
+  {
+    id: "pipian", category: "fresh", featured: false,
+    es: "Pipián", en: "Baby Squash (Pipian)",
+    desc_es: "Calabacita tierna muy suave, ideal para guisos tradicionales y sopas.",
+    desc_en: "Tender baby squash, ideal for traditional stews and soups.",
+    price: 1000,
+  },
+  {
+    id: "carolina-reaper", category: "fresh", featured: false,
+    es: "Chile Carolina Reaper", en: "Carolina Reaper Pepper",
+    desc_es: "Uno de los chiles más picantes del mundo. ¡Úsese con extrema precaución!",
+    desc_en: "One of the absolute hottest peppers in the world. Use with extreme caution!",
+    price: 1000,
+  },
+  {
+    id: "cayena", category: "fresh", featured: false,
+    es: "Chile Cayena", en: "Cayenne Pepper",
+    desc_es: "Chile alargado con un picante moderado-alto, clásico en polvos picantes.",
+    desc_en: "Long pepper with a moderate-to-high heat, a classic in spicy powders.",
+    price: 1000,
+  },
+  {
+    id: "jalapeno", category: "fresh", featured: false,
+    es: "Chile Jalapeño", en: "Jalapeño Pepper",
+    desc_es: "Picante suave y sabor fresco, excelente para salsas y pico de gallo.",
+    desc_en: "Mild heat and fresh flavor, excellent for salsas and pico de gallo.",
+    price: 1000,
+  },
+  {
+    id: "okra", category: "fresh", featured: false,
+    es: "Okra (Bamia)", en: "Okra",
+    desc_es: "Vainas tiernas ideales para espesar guisos o para comer salteadas.",
+    desc_en: "Tender pods ideal for thickening stews or eating pan-fried.",
+    price: 1000,
+  },
 
   // ── Empacados ─────────────────────────────────────────────
   {

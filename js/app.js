@@ -142,6 +142,14 @@ const PRODUCT_IMGS = {
   'caps-3':           { img: 'images/caps-3.png' },
   'caps-guanabana':   { img: 'images/caps-guanabana.png' },
   'dirty-dozen':      { img: 'images/dirty-dozen.png' },
+  mimbro:             { img: 'images/mimbro.png' },
+  ackee:              { img: 'images/ackee.png' },
+  kumquat:            { img: 'images/kumquat.png' },
+  pipian:             { img: 'images/pipian.png' },
+  'carolina-reaper':  { img: 'images/carolina-reaper.png' },
+  cayena:             { img: 'images/cayena.png' },
+  jalapeno:           { img: 'images/jalapeno.png' },
+  okra:               { img: 'images/okra.png' },
 };
 
 function getMediaImg(id) {

@@ -767,4 +767,108 @@ h1,h2,h3,h4 { font-family: var(--font-head); line-height: 1.1; color: var(--c-ol
   font-family: var(--font-head); font-weight: 800; border: 2px solid var(--c-dark);
   box-shadow: 2px 2px 0 var(--c-olive);
 }
-/* Login and Admin table omitted for brevity, assuming standard usage */
+
+/* ── Admin Login Screen ────────────────────────────────── */
+.admin-login {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--c-parchment), #e8e4d8);
+  padding: var(--sp-md);
+}
+.login-card {
+  background: var(--c-white);
+  padding: 3rem 2.5rem;
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-lg);
+  border: var(--brd-ink);
+  width: 100%; max-width: 440px;
+  text-align: center;
+}
+.login-card .logo {
+  font-size: 3.5rem; margin-bottom: 1rem;
+}
+.login-card h2 {
+  font-size: 1.6rem; margin-bottom: 0.5rem; font-family: var(--font-head); font-weight: 900;
+}
+.login-card p {
+  font-size: 0.95rem; color: var(--c-muted); margin-bottom: 2.5rem;
+}
+.form-group {
+  text-align: left; margin-bottom: 1.25rem;
+}
+.form-group label {
+  display: block; font-family: var(--font-head); font-weight: 800;
+  font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--c-olive);
+}
+.form-group input {
+  width: 100%; padding: 0.9rem 1rem; border-radius: var(--r-sm);
+  border: 1.5px solid var(--c-border); font-family: var(--font-body);
+  font-size: 1rem; color: var(--c-dark);
+  transition: all var(--dur);
+}
+.form-group input:focus {
+  border-color: var(--c-forest); outline: none; box-shadow: 0 0 0 3px rgba(75, 97, 48, 0.15);
+}
+
+/* ── Admin Content ─────────────────────────────────────── */
+.admin-content {
+  max-width: 1200px; margin: 0 auto; padding: 2.5rem var(--sp-sm) 5rem;
+}
+.admin-header h1 { margin-bottom: 0.5rem; font-size: 2.2rem; }
+.admin-header p { color: var(--c-muted); margin-bottom: 2rem; font-size: 1.05rem; }
+
+.admin-note {
+  background: rgba(201, 125, 16, 0.1);
+  border-left: 4px solid var(--c-amber);
+  padding: 1.25rem; border-radius: 6px;
+  font-size: 0.95rem; margin-bottom: 2.5rem;
+  color: var(--c-olive); font-weight: 600;
+}
+
+.admin-table-wrap {
+  background: var(--c-white);
+  border-radius: var(--r-md);
+  border: var(--brd-ink);
+  box-shadow: var(--sh-sm);
+  overflow-x: auto;
+  position: relative;
+}
+.admin-table {
+  width: 100%; border-collapse: collapse; min-width: 800px;
+}
+.admin-table th, .admin-table td {
+  padding: 1.25rem 1rem; text-align: left; border-bottom: 1px solid var(--c-border);
+}
+.admin-table th {
+  background: #fcfbf8; font-family: var(--font-head);
+  font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--c-muted); font-weight: 900;
+}
+.admin-table tr:hover {
+  background: rgba(0,0,0,0.015);
+}
+
+.admin-save-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.5rem 2rem; background: var(--c-parchment); border-top: 2px dashed var(--c-olive);
+  position: sticky; bottom: 0; z-index: 10;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
+}
+.save-feedback {
+  opacity: 0; transition: opacity 0.3s;
+  font-weight: 800; color: var(--c-forest);
+}
+.save-feedback.show { opacity: 1; }
+.btn-outline {
+  cursor: pointer;
+  background: transparent; border: 2px solid var(--c-border);
+  color: var(--c-muted); padding: 0.85rem 1.5rem; font-family: var(--font-head);
+  font-weight: 800; border-radius: var(--r-pill); transition: all var(--dur);
+}
+.btn-outline:hover {
+  background: var(--c-white); border-color: var(--c-olive); color: var(--c-olive);
+  box-shadow: 2px 2px 0 var(--c-olive);
+}
+.btn-outline:active {
+  transform: translate(2px, 2px); box-shadow: none;
+}

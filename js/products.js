@@ -339,6 +339,13 @@ const PRODUCTS = [
     desc_en: "Regulates blood sugar. Warm and irresistible aroma.",
     price: 1000,
   },
+  {
+    id: "polvo-mezcla-3", category: "spices", featured: false,
+    es: "Mezcla de Cúrcuma, Jengibre y Pimienta en Polvo", en: "Mix: Turmeric, Ginger & Pepper Powder",
+    desc_es: "Combinación potente para máxima absorción. Lista para té o cocina.",
+    desc_en: "Potent blend for maximum absorption. Ready for tea or cooking.",
+    price: 1000,
+  },
 
   // ── Harinas ───────────────────────────────────────────────
   {
@@ -360,27 +367,6 @@ const PRODUCTS = [
     es: "Harina de Camote Morado", en: "Purple Sweet Potato Flour",
     desc_es: "Color violeta natural, rica en antocianinas.",
     desc_en: "Natural violet colour, rich in anthocyanins.",
-    price: 1000,
-  },
-  {
-    id: "harina-curcuma", category: "flours", featured: false,
-    es: "Harina de Cúrcuma", en: "Turmeric Flour",
-    desc_es: "Raíz molida con alto poder desinflamatorio.",
-    desc_en: "Milled root with high anti-inflammatory power.",
-    price: 1000,
-  },
-  {
-    id: "harina-jengibre", category: "flours", featured: false,
-    es: "Harina de Jengibre", en: "Ginger Flour",
-    desc_es: "Aroma penetrante y propiedades digestivas.",
-    desc_en: "Pungent aroma and digestive properties.",
-    price: 1000,
-  },
-  {
-    id: "harina-mezcla-3", category: "flours", featured: false,
-    es: "Mezcla: Cúrcuma, Jengibre y Pimienta", en: "Mix: Turmeric, Ginger & Pepper",
-    desc_es: "Combinación potente para máxima absorción. Lista para té o cocina.",
-    desc_en: "Potent blend for maximum absorption. Ready for tea or cooking.",
     price: 1000,
   },
 

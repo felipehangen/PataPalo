@@ -324,7 +324,18 @@ function renderFeatured() {
   const container = document.getElementById('featured-scroll');
   if (!container) return;
 
-  const featured = PRODUCTS.filter(p => p.featured && p.available);
+  const categoryOrder = ['fresh', 'packed', 'chips', 'spices', 'flours', 'supplements', 'tea'];
+  let featured = PRODUCTS.filter(p => p.featured && p.available);
+  
+  featured.sort((a, b) => {
+    const idxA = categoryOrder.indexOf(a.category);
+    const idxB = categoryOrder.indexOf(b.category);
+    if (idxA !== idxB) return idxA - idxB;
+    const nameA = currentLang === 'es' ? a.es : a.en;
+    const nameB = currentLang === 'es' ? b.es : b.en;
+    return nameA.localeCompare(nameB);
+  });
+
   container.innerHTML = featured.map(p => {
     const name = currentLang === 'es' ? p.es : p.en;
     const desc = currentLang === 'es' ? p.desc_es : p.desc_en;

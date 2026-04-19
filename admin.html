@@ -265,13 +265,23 @@
 
   function renderAdminTable() {
     const tbody = document.getElementById('admin-table-body');
-    tbody.innerHTML = PRODUCTS.map(p => {
+    
+    const categoryOrder = ['fresh', 'packed', 'chips', 'spices', 'flours', 'supplements', 'tea'];
+    const list = [...PRODUCTS].sort((a, b) => {
+      const idxA = categoryOrder.indexOf(a.category);
+      const idxB = categoryOrder.indexOf(b.category);
+      if (idxA !== idxB) return idxA - idxB;
+      return a.es.localeCompare(b.es);
+    });
+
+    tbody.innerHTML = list.map(p => {
       const conf = getProductConfig(p);
+      const catName = CAT_LABELS[p.category] || p.category;
       return `
         <tr>
           <td>
-            <strong>${p.es}</strong><br>
-            <small style="color:var(--c-muted)">${CAT_LABELS[p.category] || p.category} / Ref: ₡${p.price.toLocaleString('es-CR')}</small>
+            <strong><span style="color:var(--c-muted)">[${catName}]</span> ${p.es}</strong><br>
+            <small style="color:var(--c-muted)">Ref: ₡${p.price.toLocaleString('es-CR')}</small>
           </td>
           <td>
             <div style="display:flex; flex-direction:column; gap:8px; font-size:0.85rem;">

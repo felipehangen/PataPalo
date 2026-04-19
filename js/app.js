@@ -403,7 +403,20 @@ function renderProducts(cat = 'all') {
   const container = document.getElementById('products-grid');
   if (!container) return;
 
-  const list = cat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === cat);
+  let list = cat === 'all' ? [...PRODUCTS] : PRODUCTS.filter(p => p.category === cat);
+
+  // Maintain section grouping, but internally sort alphabetically based on current language
+  const categoryOrder = ['fresh', 'packed', 'chips', 'spices', 'flours', 'supplements', 'tea'];
+  list.sort((a, b) => {
+    if (cat === 'all') {
+      const idxA = categoryOrder.indexOf(a.category);
+      const idxB = categoryOrder.indexOf(b.category);
+      if (idxA !== idxB) return idxA - idxB;
+    }
+    const nameA = currentLang === 'es' ? a.es : a.en;
+    const nameB = currentLang === 'es' ? b.es : b.en;
+    return nameA.localeCompare(nameB);
+  });
   const catLabel = currentLang === 'es'
     ? { fresh:'Fresco', packed:'Empacado', chips:'Chips', spices:'Especia', flours:'Harina', supplements:'Suplemento', tea:'Té' }
     : { fresh:'Fresh', packed:'Packed', chips:'Chips', spices:'Spice', flours:'Flour', supplements:'Supplement', tea:'Tea' };

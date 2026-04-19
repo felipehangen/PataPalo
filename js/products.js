@@ -249,6 +249,27 @@ const PRODUCTS = [
     desc_en: "Citrusy and piney ginger relative, essential base of Thai spiciness.",
     price: 1000,
   },
+  {
+    id: "manzana-agua-roja", category: "fresh", featured: false,
+    es: "Manzana de Agua Roja", en: "Red Malay Apple",
+    desc_es: "Dulce, jugosa y refrescante.",
+    desc_en: "Sweet, juicy and refreshing.",
+    price: 1000,
+  },
+  {
+    id: "manzana-agua-blanca", category: "fresh", featured: false,
+    es: "Manzana de Agua Blanca", en: "White Malay Apple",
+    desc_es: "Suave, exótica y muy hidratante.",
+    desc_en: "Mild, exotic, and highly hydrating.",
+    price: 1000,
+  },
+  {
+    id: "camote-criollo", category: "fresh", featured: false,
+    es: "Camote Criollo", en: "Local Sweet Potato",
+    desc_es: "Tubérculo tradicional rico en fibra.",
+    desc_en: "Traditional tuber rich in fiber.",
+    price: 1000,
+  },
 
   // ── Empacados ─────────────────────────────────────────────
   {
@@ -339,6 +360,27 @@ const PRODUCTS = [
     es: "Harina de Camote Morado", en: "Purple Sweet Potato Flour",
     desc_es: "Color violeta natural, rica en antocianinas.",
     desc_en: "Natural violet colour, rich in anthocyanins.",
+    price: 1000,
+  },
+  {
+    id: "harina-curcuma", category: "flours", featured: false,
+    es: "Harina de Cúrcuma", en: "Turmeric Flour",
+    desc_es: "Raíz molida con alto poder desinflamatorio.",
+    desc_en: "Milled root with high anti-inflammatory power.",
+    price: 1000,
+  },
+  {
+    id: "harina-jengibre", category: "flours", featured: false,
+    es: "Harina de Jengibre", en: "Ginger Flour",
+    desc_es: "Aroma penetrante y propiedades digestivas.",
+    desc_en: "Pungent aroma and digestive properties.",
+    price: 1000,
+  },
+  {
+    id: "harina-mezcla-3", category: "flours", featured: false,
+    es: "Mezcla: Cúrcuma, Jengibre y Pimienta", en: "Mix: Turmeric, Ginger & Pepper",
+    desc_es: "Combinación potente para máxima absorción. Lista para té o cocina.",
+    desc_en: "Potent blend for maximum absorption. Ready for tea or cooking.",
     price: 1000,
   },
 

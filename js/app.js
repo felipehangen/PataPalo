@@ -19,6 +19,7 @@ function setLang(lang) {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
   // Re-render dynamic content in correct language
+  renderCategoryTabs();
   renderFeatured();
   renderProducts(currentCategory);
   renderCart();
